@@ -35,6 +35,10 @@ public class CartItem {
         return product;
     }
 
+    public Long getProductId() {
+        return product != null ? product.getId() : null;
+    }
+
     public void setProduct(Product product) {
         this.product = product;
     }

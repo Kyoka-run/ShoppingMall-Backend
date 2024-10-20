@@ -28,8 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByCustomerId(Long customerId) {
-        // Custom method can be implemented in repository if needed
-        return orderRepository.findAll(); // Replace with actual implementation
+        return orderRepository.findByCustomerId(customerId);  // Use a custom repository method
     }
 
     @Override
@@ -39,7 +38,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrder(Long id) {
-        orderRepository.deleteById(id);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        if (order.getStatus().equals("CREATED")) {
+            order.setStatus("CANCELLED");
+            orderRepository.save(order);
+        }
     }
 
     @Override

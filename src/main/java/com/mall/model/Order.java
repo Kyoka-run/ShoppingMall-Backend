@@ -17,6 +17,7 @@ public class Order {
 
     private Date orderDate;
     private Double totalPrice;
+    private String status;
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
@@ -24,11 +25,12 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Customer customer, Date orderDate, Double totalPrice, List<OrderItem> orderItems) {
+    public Order(Long id, Customer customer, Date orderDate, Double totalPrice, String status, List<OrderItem> orderItems) {
         this.id = id;
         this.customer = customer;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
+        this.status = status;
         this.orderItems = orderItems;
     }
 
@@ -70,6 +72,14 @@ public class Order {
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 
