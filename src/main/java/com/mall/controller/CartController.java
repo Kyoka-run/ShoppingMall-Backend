@@ -21,8 +21,8 @@ public class CartController {
     }
 
     @GetMapping("/{customerId}")
-    public Cart getCartByCustomerId(@PathVariable Long customerId) {
-        return cartService.getCartByCustomerId(customerId);
+    public Cart getCartByCustomerId(@PathVariable Long userId) {
+        return cartService.getCartByUserId(userId);
     }
 
     @PutMapping("/{customerId}/update")

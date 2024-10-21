@@ -13,7 +13,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private User user;
 
     @OneToMany
     private List<CartItem> items;
@@ -21,9 +21,9 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Long id, Customer customer, List<CartItem> items) {
+    public Cart(Long id, User user, List<CartItem> items) {
         this.id = id;
-        this.customer = customer;
+        this.user = user;
         this.items = items;
     }
 
@@ -35,12 +35,12 @@ public class Cart {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getCustomer() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(User user) {
+        this.user = user;
     }
 
     public List<CartItem> getItems() {

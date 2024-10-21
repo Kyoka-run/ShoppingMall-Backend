@@ -14,7 +14,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private User user;
 
     private String comment;
     private Integer rating;
@@ -22,10 +22,10 @@ public class Review {
     public Review() {
     }
 
-    public Review(Long id, Product product, Customer customer, String comment, Integer rating) {
+    public Review(Long id, Product product, User user, String comment, Integer rating) {
         this.id = id;
         this.product = product;
-        this.customer = customer;
+        this.user = user;
         this.comment = comment;
         this.rating = rating;
     }
@@ -46,12 +46,12 @@ public class Review {
         this.product = product;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getCustomer() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(User user) {
+        this.user = user;
     }
 
     public String getComment() {

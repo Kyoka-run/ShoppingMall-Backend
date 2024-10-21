@@ -13,7 +13,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private User user;
 
     private Date orderDate;
     private Double totalPrice;
@@ -25,9 +25,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Customer customer, Date orderDate, Double totalPrice, String status, List<OrderItem> orderItems) {
+    public Order(Long id, User user, Date orderDate, Double totalPrice, String status, List<OrderItem> orderItems) {
         this.id = id;
-        this.customer = customer;
+        this.user = user;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
         this.status = status;
@@ -50,12 +50,12 @@ public class Order {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getOrderDate() {

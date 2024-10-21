@@ -1,12 +1,11 @@
 package com.mall.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
-public class Customer {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,17 +13,19 @@ public class Customer {
     private String username;
     private String password;
     private String email;
-    private String address;
 
-    public Customer() {
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
+    public User() {
     }
 
-    public Customer(Long id, String username, String password, String email, String address) {
+    public User(Long id, String username, String password, String email, List<String> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.address = address;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -59,12 +60,12 @@ public class Customer {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }
 
