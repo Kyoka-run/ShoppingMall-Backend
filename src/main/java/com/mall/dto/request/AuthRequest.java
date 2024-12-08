@@ -1,4 +1,4 @@
-package dto;
+package com.mall.dto.request;
 
 public class AuthRequest {
     private String username;

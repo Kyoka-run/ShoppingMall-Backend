@@ -19,18 +19,30 @@ public class Order {
     private Double totalPrice;
     private String status;
 
+    //order info
+    private String shippingAddress;
+    private String shippingMethod;
+    private Double shippingCost;
+    private String receiverName;
+    private String receiverPhone;
+
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems;
 
     public Order() {
     }
 
-    public Order(Long id, User user, Date orderDate, Double totalPrice, String status, List<OrderItem> orderItems) {
+    public Order(Long id, User user, Date orderDate, Double totalPrice, String status, String shippingAddress, String shippingMethod, Double shippingCost, String receiverName, String receiverPhone, List<OrderItem> orderItems) {
         this.id = id;
         this.user = user;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
         this.status = status;
+        this.shippingAddress = shippingAddress;
+        this.shippingMethod = shippingMethod;
+        this.shippingCost = shippingCost;
+        this.receiverName = receiverName;
+        this.receiverPhone = receiverPhone;
         this.orderItems = orderItems;
     }
 
@@ -80,6 +92,46 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public String getShippingMethod() {
+        return shippingMethod;
+    }
+
+    public void setShippingMethod(String shippingMethod) {
+        this.shippingMethod = shippingMethod;
+    }
+
+    public Double getShippingCost() {
+        return shippingCost;
+    }
+
+    public void setShippingCost(Double shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
+    }
+
+    public String getReceiverPhone() {
+        return receiverPhone;
+    }
+
+    public void setReceiverPhone(String receiverPhone) {
+        this.receiverPhone = receiverPhone;
     }
 }
 
