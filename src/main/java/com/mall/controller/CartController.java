@@ -1,8 +1,11 @@
 package com.mall.controller;
 
+import com.mall.exception.BusinessException;
+import com.mall.exception.NotFoundException;
 import com.mall.model.Cart;
 import com.mall.model.CartItem;
 import com.mall.service.CartService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,24 +18,48 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/{customerId}/add")
-    public Cart addProductToCart(@PathVariable Long customerId, @RequestBody CartItem cartItem) {
-        return cartService.addProductToCart(customerId, cartItem.getProductId(), cartItem.getQuantity());
+    @GetMapping("/{customerId}")
+    public ResponseEntity<Cart> getCartByCustomerId(@PathVariable Long customerId) {
+        try {
+            Cart cart = cartService.getCartByUserId(customerId);
+            return ResponseEntity.ok(cart);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/{customerId}")
-    public Cart getCartByCustomerId(@PathVariable Long userId) {
-        return cartService.getCartByUserId(userId);
+    @PostMapping("/{customerId}/add")
+    public ResponseEntity<Cart> addProductToCart(@PathVariable Long customerId,
+                                                 @RequestBody CartItem cartItem) {
+        try {
+            Cart updated = cartService.addProductToCart(customerId,
+                    cartItem.getProductId(), cartItem.getQuantity());
+            return ResponseEntity.ok(updated);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{customerId}/update")
-    public Cart updateCartItem(@PathVariable Long customerId, @RequestBody CartItem cartItem) {
-        return cartService.updateCartItem(customerId, cartItem.getProductId(), cartItem.getQuantity());
+    public ResponseEntity<Cart> updateCartItem(@PathVariable Long customerId,
+                                               @RequestBody CartItem cartItem) {
+        try {
+            Cart updated = cartService.updateCartItem(customerId,
+                    cartItem.getProductId(), cartItem.getQuantity());
+            return ResponseEntity.ok(updated);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{customerId}/clear")
-    public void clearCart(@PathVariable Long customerId) {
+    public ResponseEntity<Void> clearCart(@PathVariable Long customerId) {
         cartService.clearCart(customerId);
+        return ResponseEntity.ok().build();
     }
 }
 

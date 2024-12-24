@@ -1,10 +1,10 @@
-package com.mall.dto.request;
+package com.mall.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
+public class AuthRequest {
     @NotBlank(message = "Username is required")
     private String username;
 

@@ -1,11 +1,7 @@
 package com.mall.exception;
 
-public class UnauthorizedException extends BaseException {
+public class UnauthorizedException extends RuntimeException {
     public UnauthorizedException(String message) {
-        super(ResultCode.UNAUTHORIZED.getCode(), message);
-    }
-
-    public UnauthorizedException(ResultCode resultCode) {
-        super(resultCode);
+        super(message);
     }
 }

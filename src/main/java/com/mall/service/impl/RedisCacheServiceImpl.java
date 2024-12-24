@@ -9,8 +9,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RedisCacheServiceImpl implements CacheService {
     private final RedisTemplate<String, String> redisTemplate;
-    private static final String USER_PREFIX = "user:";
-    private static final String PRODUCT_PREFIX = "product:";
+
+    private static final String PRODUCT_CACHE_KEY = "product:";
+    private static final String CATEGORY_CACHE_KEY = "category:";
+    private static final String USER_CACHE_KEY = "user:";
+    private static final String CART_CACHE_KEY = "cart:";
 
     public RedisCacheServiceImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -34,5 +37,17 @@ public class RedisCacheServiceImpl implements CacheService {
     @Override
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    @Override
+    public void setHash(String key, String hashKey, String value, long timeoutHours) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+        redisTemplate.expire(key, timeoutHours, TimeUnit.HOURS);
+    }
+
+    @Override
+    public String getHash(String key, String hashKey) {
+        Object value = redisTemplate.opsForHash().get(key, hashKey);
+        return value != null ? value.toString() : null;
     }
 }

@@ -1,17 +1,12 @@
 package com.mall.service;
 
-import com.mall.dto.request.LoginRequest;
-import com.mall.dto.request.RegisterRequest;
-import com.mall.dto.response.UserResponse;
+import com.mall.dto.AuthRequest;
+import com.mall.dto.AuthResponse;
+import com.mall.dto.RegisterRequest;
 import com.mall.model.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
-
-public interface UserService extends UserDetailsService {
-    UserResponse register(RegisterRequest request);
-    UserResponse login(LoginRequest request);
-    UserResponse findByUsername(String username);
-    UserResponse createUserResponse(UserDetails userDetails, String token);
+public interface UserService {
+    AuthResponse authenticate(AuthRequest request);
+    AuthResponse register(RegisterRequest request);
+    User findByUsername(String username);
 }

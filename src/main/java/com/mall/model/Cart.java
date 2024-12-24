@@ -1,5 +1,6 @@
 package com.mall.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class Cart {
     @JoinColumn(name = "customer_id")
     private User user;
 
-    @OneToMany
+    @JsonManagedReference
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 
     public Cart() {

@@ -1,8 +1,12 @@
 package com.mall.service.impl;
 
+import com.mall.exception.BusinessException;
+import com.mall.exception.NotFoundException;
 import com.mall.model.Order;
 import com.mall.model.OrderItem;
+import com.mall.model.Product;
 import com.mall.repository.OrderRepository;
+import com.mall.repository.ProductRepository;
 import com.mall.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,31 +17,61 @@ import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     @Transactional
     public Order createOrder(Order order) {
-        // order created time
+        order.setStatus(Order.OrderStatus.PENDING);
         order.setOrderDate(new Date());
 
-        // set status
-        order.setStatus("CREATED");
-
-        // calculate money
-        double totalPrice = calculateItemsTotal(order.getOrderItems());
+        // Calculate total price
+        double totalPrice = order.getOrderItems().stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
         order.setTotalPrice(totalPrice + order.getShippingCost());
+
+        // Check stock availability
+        for (OrderItem item : order.getOrderItems()) {
+            Product product = productRepository.findById(item.getProduct().getId())
+                    .orElseThrow(() -> new NotFoundException("Product not found: " + item.getProduct().getId()));
+
+            if (product.getStock() < item.getQuantity()) {
+                throw new BusinessException("Insufficient stock for product: " + product.getName());
+            }
+        }
 
         return orderRepository.save(order);
     }
 
-    private double calculateItemsTotal(List<OrderItem> items) {
-        return items.stream()
-                .mapToDouble(item -> item.getPrice() * item.getQuantity())
-                .sum();
+    @Override
+    @Transactional
+    public Order payOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("Order not found"));
+
+        // Only pending orders can be paid
+        if (order.getStatus() != Order.OrderStatus.PENDING) {
+            throw new BusinessException("Order cannot be paid in current status: " + order.getStatus());
+        }
+
+        // Update order status and payment time
+        order.setStatus(Order.OrderStatus.PAID);
+        order.setPaymentTime(new Date());
+
+        // Update product stock
+        for (OrderItem item : order.getOrderItems()) {
+            Product product = item.getProduct();
+            product.setStock(product.getStock() - item.getQuantity());
+            productRepository.save(product);
+        }
+
+        return orderRepository.save(order);
     }
 
     @Override
@@ -52,18 +86,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderById(Long id) {
-        return orderRepository.findById(id).orElse(null);
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order not found: " + id));
     }
 
-    @Override
-    public void cancelOrder(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    @Transactional
+    public Order cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("Order not found"));
 
-        if (order.getStatus().equals("CREATED")) {
-            order.setStatus("CANCELLED");
-            orderRepository.save(order);
+        // Can only cancel pending orders
+        if (order.getStatus() != Order.OrderStatus.PENDING) {
+            throw new BusinessException("Order cannot be cancelled");
         }
+
+        order.setStatus(Order.OrderStatus.CANCELLED);
+        return orderRepository.save(order);
     }
 
     @Override
